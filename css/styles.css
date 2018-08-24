@@ -4,7 +4,6 @@ button {
   left: 10%;
   opacity: 0;
   transform-origin: left;
-  /* transition: all 600ms ease; */
 }
 #start-button, #previous-button, #next-button {
   transition: all 300ms ease;
@@ -16,9 +15,13 @@ button {
   margin-bottom: 0px;
   padding: 10px 40px 30px 40px;
 }
-.section {
-  width: 50%;
-  transform-origin: top center;
-  transform: scaleY(0);
+#pizza-card {
+  width:100%;
+  transform: translateX(100%);
+  opacity:0;
   transition: all 600ms ease;
+}
+.section {
+  width: 100%;
+  display:none;
 }
