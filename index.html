@@ -14,7 +14,7 @@
   <body>
     <div class="container">
       <div class="card-header" id="header">
-        <h1 class="display-4">Pizza Place</h1>
+        <h1 class="display-4">Pizza Order Simulator</h1>
         <p class="lead">Customize your fake pizza.</p>
         <hr class="my-4">
         <div style="position: relative; width: 0; height: 0">
@@ -30,15 +30,21 @@
               <h3>Choose Your Size</h3>
             </div>
             <div class="card-body">
-              Blargh
+              <h1><div id="small-badge" class="badge badge-success size-badge">Small</div></h1>
+              <h1><div id="medium-badge" class="badge badge-secondary size-badge">Medium</div></h1>
+              <h1><div id="large-badge" class="badge badge-secondary size-badge">Large</div></h1>
+              <h1><div id="extra-large-badge" class="badge badge-secondary size-badge">Extra Large</div></h1>
             </div>
           </div>
-          <div class="card section" id="type-card">
+          <div class="card section" id="style-card">
             <div class="card-header">
               <h3>Choose Your Crust Style</h3>
             </div>
             <div class="card-body">
-              Blargh
+              <h1><div id="hand-tossed-badge" class="badge badge-success style-badge">Hand-Tossed</div></h1>
+              <h1><div id="deep-dish-badge" class="badge badge-secondary style-badge">Deep Dish</div></h1>
+              <h1><div id="thin-badge" class="badge badge-secondary style-badge">Thin Crust</div></h1>
+              <h1><div id="gluten-free-badge" class="badge badge-secondary style-badge">Gluten-Free</div></h1>
             </div>
           </div>
           <div class="card section" id="toppings-card">
@@ -46,7 +52,24 @@
               <h3>Choose Your Toppings</h3>
             </div>
             <div class="card-body">
-              Blargh
+              <div class="row">
+                <div class="col">
+                  <h3><div class="badge badge-secondary toppings-badge">Diced Tomatoes</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Green Onions</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Red Onions</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Artichoke Hearts</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Green Peppers</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Red Peppers</div></h3>
+                </div>
+                <div class="col">
+                  <h3><div class="badge badge-secondary toppings-badge">Pepperoncinis</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Spinach</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Garlic</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Black Olives</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Jalapenos</div></h3>
+                  <h3><div class="badge badge-secondary toppings-badge">Artichoke Hearts</div></h3>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -63,7 +86,28 @@
               </div>
             </div>
             <div class="card-body">
-              Blargh
+              <div id="pizza-info">
+                <div class="row">
+                  <div class="col">
+                    <strong>Size:</strong>
+                    <span id="size-display">
+                      Small
+                    </span>
+                  </div>
+                  <div class="col" style="text-align:right">
+
+                    <strong>Style:</strong>
+                    <span id="style-display">
+                      Hand-Tossed
+                    </span>
+                  </div>
+                </div>
+                <p></p>
+                <strong>Toppings:</strong>
+                <span id="toppings-display">
+                  Cheese
+                </span><br />
+              </div>
             </div>
           </div>
         </div>

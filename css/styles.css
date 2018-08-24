@@ -1,5 +1,5 @@
 button {
-  width:160px;
+  min-width:160px;
   position:relative;
   left: 10%;
   opacity: 0;
@@ -20,8 +20,17 @@ button {
   transform: translateX(100%);
   opacity:0;
   transition: all 600ms ease;
+  font-size: 1.5em
+}
+.lead {
+  color:#777
 }
 .section {
   width: 100%;
   display:none;
+}
+.badge {
+  cursor: pointer;
+  margin-top:5px;
+  margin-bottom:5px;
 }
