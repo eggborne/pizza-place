@@ -9,17 +9,10 @@
     <script src="js/scripts.js" type="text/javascript"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet "type="text/css">
     <link href="css/styles.css" rel="stylesheet "type="text/css">
-    <title>Pizza Place</title>
+    <title>Pizza Order Simulator</title>
   </head>
   <body>
-    <div id="invoice" class="card">
-      <div class="card-header">
-        <h4 style="text-align:center">Confirm Order</h4>
-      </div>
-      <div class="card-body">
-        <p>blargh</p>
-      </div>
-    </div>
+    <div id="overlay"></div>
     <div class="card-header" id="header">
       <h1 class="display-4">Pizza Order Simulator</h1>
       <p class="lead">Customize your fake pizza.</p>
@@ -28,19 +21,25 @@
         <button id="start-button" class="btn btn-success btn-lg">Get Started!</button>
       </div>
       <button id="previous-button" class="btn btn-success btn-lg prev-next"> Previous</button>
-      <button id="next-button" class="btn btn-success btn-lg prev-next">Next  </button>
+      <button id="next-button" class="btn btn-success btn-lg prev-next">Next ></button>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-5">
         <div class="card section" id="size-card">
           <div class="card-header">
             <h4 style="text-align:center">Choose Your Size</h4>
           </div>
           <div class="card-body">
-            <h2><div id="small-badge" class="badge badge-success size-badge">Small</div></h2>
-            <h2><div id="medium-badge" class="badge badge-secondary size-badge">Medium</div></h2>
-            <h2><div id="large-badge" class="badge badge-secondary size-badge">Large</div></h2>
-            <h2><div id="extra-large-badge" class="badge badge-secondary size-badge">Extra Large</div></h2>
+            <div class="row">
+              <div class="col-md">
+                <h3><div class="badge badge-success size-badge">Small</div></h3>
+                <h3><div class="badge badge-secondary size-badge">Medium</div></h3>
+              </div>
+              <div class="col-md">
+                <h3><div class="badge badge-secondary size-badge">Large</div></h3>
+                <h3><div class="badge badge-secondary size-badge">Extra Large</div></h3>
+              </div>
+            </div>
           </div>
         </div>
         <div class="card section" id="style-card">
@@ -48,10 +47,16 @@
             <h4 style="text-align:center">Choose Your Crust Style</h4>
           </div>
           <div class="card-body">
-            <h2><div id="hand-tossed-badge" class="badge badge-success style-badge">Hand-Tossed</div></h2>
-            <h2><div id="deep-dish-badge" class="badge badge-secondary style-badge">Deep Dish</div></h2>
-            <h2><div id="thin-badge" class="badge badge-secondary style-badge">Thin Crust</div></h2>
-            <h2><div id="gluten-free-badge" class="badge badge-secondary style-badge">Gluten-Free</div></h2>
+            <div class="row">
+                <div class="col-md">
+                  <h3><div id="hand-tossed-badge" class="badge badge-success style-badge">Hand-Tossed</div></h3>
+                  <h3><div id="deep-dish-badge" class="badge badge-secondary style-badge">Deep Dish</div></h3>
+                </div>
+                <div class="col-md">
+                  <h3><div id="thin-badge" class="badge badge-secondary style-badge">Wafer-Thin</div></h3>
+                  <h3><div id="gluten-free-badge" class="badge badge-secondary style-badge">Gluten-Free</div></h3>
+                </div>
+              </div>
           </div>
         </div>
         <div class="card section" id="toppings-card">
@@ -60,21 +65,36 @@
           </div>
           <div class="card-body">
             <div class="row">
+              <div class="col-md-3">
+                  <h4><div style="background:none" class="badge badge-light">Cheese:</div></h4>
+              </div>
+              <div class="col-md-3">
+                <h4><div class="btn-block badge badge-secondary cheese-badge">None</div></h4>
+              </div>
+              <div class="col-md-3" style="padding:0px">
+                <h4><div class="btn-block badge badge-success cheese-badge">Normal</div></h4>
+              </div>
+              <div class="col-md-3">
+                <h4><div class="btn-block badge badge-secondary cheese-badge">Extra</div></h4>                  
+              </div>
+            </div>
+            <hr class="my-3">
+            <div class="row">
               <div class="col">
-                <h4><div class="badge badge-secondary toppings-badge">Diced Tomatoes</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Green Onions</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Red Onions</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Artichoke Hearts</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Green Peppers</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Red Peppers</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Diced Tomatoes</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Green Onions</div></h4>
+                <h4><div class="btn-block btn-block badge badge-secondary toppings-badge">Red Onions</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Artichoke Hearts</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Green Peppers</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Red Peppers</div></h4>
               </div>
               <div class="col">
-                <h4><div class="badge badge-secondary toppings-badge">Pepperoncinis</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Spinach</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Garlic</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Black Olives</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Jalapenos</div></h4>
-                <h4><div class="badge badge-secondary toppings-badge">Sprouts</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Pepperoncinis</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Spinach</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Garlic</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Black Olives</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Jalapenos</div></h4>
+                <h4><div class="btn-block badge badge-secondary toppings-badge">Sprouts</div></h4>
               </div>
             </div>
           </div>
