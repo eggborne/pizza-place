@@ -1,5 +1,5 @@
 # Pizza Order Simulator
-#### Special Project #3 for Epicodus, 24 August 2018
+#### Special Project #4 for Epicodus, 24 August 2018
 ### by Michael Donovan
 
 #### A website which simulates the pizza ordering experience. The user chooses a size, crust style, and variety of toppings.
