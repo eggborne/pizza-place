@@ -1,24 +1,32 @@
 body {
   background-color: tan;
-  margin-left:10%;
-  margin-right:10%;
+  margin-left:auto;
+  margin-right:auto;
+  max-width:900px
 }
 button {
   min-width:160px;
   position:relative;
-  left: 10%;
   opacity: 0;
   animation-name: pulse;
-  animation-duration: 150ms;
+  animation-duration: 220ms;
   animation-iteration-count: infinite;
   animation-play-state: paused;
-  animation-delay: 400ms;
+  animation-delay: 200ms;
+}
+.btn {
+  border: 2px outset lightgreen;
+}
+.badge {
+  cursor: pointer;
+  border: 2px outset;
 }
 #start-button, #previous-button, #next-button {
   transition: all 300ms ease, transform 400ms ease;
 }
 #start-button {
   position:absolute;
+  transform: translateX(-25%)
 }
 #header {
   background-color: white;
@@ -31,19 +39,38 @@ button {
   transform: translateX(100%);
   opacity:0;
   transition: all 600ms ease;
-  font-size: 1.25em;
+  font-size: 1.15em;
   border-right: 0px;
   /* transform-origin: top; */
 }
+#overlay {
+  background: black;
+  opacity: 0.7;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  display:none;
+}
 #invoice {
   position:fixed;
-  opacity:0.9;
-  width: 60%;
   transform: translateX(-50%);
   top: 10%;
   left: 50vw;
   z-index: 25;
-  display:none;
+}
+#invoice>.card-body {
+  padding:30px 50px 30px 50px;
+}
+#item-list {
+  min-height:36vh;
+}
+#final-button {
+  border: 2px outset lightgreen;
+}
+.bordered {
+  border: 1px solid black;
+  padding:5px 12px;
 }
 .container {
   max-width:800px;
@@ -51,9 +78,13 @@ button {
 .right-align {
   text-align:right;
 }
+.size-badge, .style-badge, .toppings-badge {
+  transition: all 400ms ease;
+}
 .toppings-badge {
-  padding-top: 5%;
-  padding-bottom: 5%;
+  padding-top: 8%;
+  padding-bottom: 8%;
+  font-size:0.65em
 }
 .lead {
   color:#777
@@ -61,11 +92,6 @@ button {
 .section {
   width: 100%;
   display:none;
-}
-.badge {
-  cursor: pointer;
-  margin-top:5px;
-  margin-bottom:5px;
 }
 .prev-next {
   pointer-events: none;
@@ -77,5 +103,5 @@ button {
   animation-play-state: running;
 }
 @keyframes pulse {
-  50% {opacity:0.8}
+  50% {opacity:0.9}
 }
