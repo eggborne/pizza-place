@@ -31,7 +31,7 @@ var prices = {
 $(function(){
   onFromRight('button#start-button');
   pizza = new Pizza()
-  $('#start-button').click(function(){
+  $('#start-button').click(function(event){
     off('button#start-button');
     onFromRight('button#previous-button');
     onFromRight('button#next-button');
@@ -39,13 +39,13 @@ $(function(){
     $('.section#'+activeSection+'-card').slideDown(600)
     $('.section').css({
       'opacity': '1'
-    })
+    });
     $('#pizza-card').css({
       'transform': 'translateX(0%)',
       'opacity': '1'
-    })
+    });
     $('button#previous-button').text("Cancel")
-
+    // event.preventDefault()
   });
   $('#next-button').click(function(){
     if ($(this).text() === "Confirm Order") {
@@ -67,7 +67,7 @@ $(function(){
     if (sections.indexOf(activeSection) === sections.length-1) {
       $('button#next-button').text("Confirm Order")
     }
-  })
+  });
   $('#previous-button').click(function(){
     if ($(this).text()==="Cancel") {
       location.reload();
@@ -88,27 +88,28 @@ $(function(){
     }
   });
   $('.size-badge').click(function(){
-    $('.size-badge').removeClass('badge-success')
-    $('.size-badge').addClass('badge-secondary')
-    $(this).removeClass('badge-secondary')
-    $(this).addClass('badge-success')
-    pizza.size = $(this).text()
-    $('#size-display').text(pizza.size + " ")
-    pizza.addCost('sizes',$(this).text())
-    pizza.updatePrice()
-  })
+    $('.size-badge').removeClass('badge-success');
+    $('.size-badge').addClass('badge-secondary');
+    $(this).removeClass('badge-secondary');
+    $(this).addClass('badge-success');
+    pizza.subtractCost('sizes',pizza.size);
+    pizza.size = $(this).text();
+    $('#size-display').text(pizza.size + " ");
+    
+    pizza.addCost('sizes',$(this).text());
+    pizza.updatePrice();
+  });
   $('.style-badge').click(function(){
-    $('.style-badge').removeClass('badge-success')
-    $('.style-badge').addClass('badge-secondary')
-    $(this).removeClass('badge-secondary')
-    $(this).addClass('badge-success')
-    pizza.style = $(this).text()
-    $('#style-display').text(pizza.style + " ")
-    console.log($(this).text())
-    console.log("cost " + prices.styles[$(this).text()])
-    pizza.addCost('styles',$(this).text())
-    pizza.updatePrice()
-  })
+    $('.style-badge').removeClass('badge-success');
+    $('.style-badge').addClass('badge-secondary');
+    $(this).removeClass('badge-secondary');
+    $(this).addClass('badge-success');
+    pizza.subtractCost('styles',pizza.style);
+    pizza.style = $(this).text();
+    $('#style-display').text(pizza.style + " ");  
+    pizza.addCost('styles',$(this).text());
+    pizza.updatePrice();
+  });
   $('.toppings-badge').click(function(){
     var sizeIndex = Object.keys(prices.sizes).indexOf(pizza.size)
     if ($(this).hasClass('badge-success')) {
@@ -124,7 +125,7 @@ $(function(){
     }
     pizza.updatePrice()
     $('#toppings-display').text(pizza.toppingsList())
-  })
+  });
 });
 function onFromRight(element) {
   $(element).css({
@@ -145,10 +146,10 @@ function Pizza() {
   this.size = "Small";
   this.style = "Hand-Tossed";
   this.toppings = ["Cheese"];
-  this.totalPrice = 0
+  this.totalPrice = 0;
   this.addCost('sizes','Small');
   this.addCost('styles','Hand-Tossed');
-  this.updatePrice()
+  this.updatePrice();
 }
 Pizza.prototype.toppingsList = function() {
   var list = "";
@@ -159,20 +160,21 @@ Pizza.prototype.toppingsList = function() {
     }
   });
   console.log("list " + list)
-  return list
+  return list;
 }
 Pizza.prototype.addCost = function(category,item,index) {
   if (index) {
     this.totalPrice += parseInt(prices[category][item][index])
   } else {
-    this.totalPrice += parseInt(prices[category][item])
+    this.totalPrice += parseInt(prices[category][item]);
   }
 }
 Pizza.prototype.subtractCost = function(category,item,index) {
   if (index) {
     this.totalPrice -= parseInt(prices[category][item][index])
   } else {
-    this.totalPrice -= parseInt(prices[category][item])
+    
+    this.totalPrice -= parseInt(prices[category][item]);
   }
 }
 Pizza.prototype.updatePrice = function(){
