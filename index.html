@@ -12,102 +12,107 @@
     <title>Pizza Place</title>
   </head>
   <body>
-    <div class="container">
-      <div class="card-header" id="header">
-        <h1 class="display-4">Pizza Order Simulator</h1>
-        <p class="lead">Customize your fake pizza.</p>
-        <hr class="my-4">
-        <div style="position: relative; width: 0; height: 0">
-          <button id="start-button" class="btn btn-success btn-lg">Get Started!</button>
-        </div>
-        <button id="previous-button" class="btn btn-success btn-lg prev-next">< Previous</button>
-        <button id="next-button" class="btn btn-success btn-lg prev-next">Next ></button>
+    <div id="invoice" class="card">
+      <div class="card-header">
+        <h4 style="text-align:center">Confirm Order</h4>
       </div>
-      <div class="row">
-        <div class="col">
-          <div class="card section" id="size-card">
-            <div class="card-header">
-              <h3>Choose Your Size</h3>
-            </div>
-            <div class="card-body">
-              <h1><div id="small-badge" class="badge badge-success size-badge">Small</div></h1>
-              <h1><div id="medium-badge" class="badge badge-secondary size-badge">Medium</div></h1>
-              <h1><div id="large-badge" class="badge badge-secondary size-badge">Large</div></h1>
-              <h1><div id="extra-large-badge" class="badge badge-secondary size-badge">Extra Large</div></h1>
-            </div>
+      <div class="card-body">
+        <p>blargh</p>
+      </div>
+    </div>
+    <div class="card-header" id="header">
+      <h1 class="display-4">Pizza Order Simulator</h1>
+      <p class="lead">Customize your fake pizza.</p>
+      <hr class="my-4">
+      <div style="position: relative; width: 0; height: 0">
+        <button id="start-button" class="btn btn-success btn-lg">Get Started!</button>
+      </div>
+      <button id="previous-button" class="btn btn-success btn-lg prev-next"> Previous</button>
+      <button id="next-button" class="btn btn-success btn-lg prev-next">Next  </button>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="card section" id="size-card">
+          <div class="card-header">
+            <h4 style="text-align:center">Choose Your Size</h4>
           </div>
-          <div class="card section" id="style-card">
-            <div class="card-header">
-              <h3>Choose Your Crust Style</h3>
-            </div>
-            <div class="card-body">
-              <h1><div id="hand-tossed-badge" class="badge badge-success style-badge">Hand-Tossed</div></h1>
-              <h1><div id="deep-dish-badge" class="badge badge-secondary style-badge">Deep Dish</div></h1>
-              <h1><div id="thin-badge" class="badge badge-secondary style-badge">Thin Crust</div></h1>
-              <h1><div id="gluten-free-badge" class="badge badge-secondary style-badge">Gluten-Free</div></h1>
-            </div>
+          <div class="card-body">
+            <h2><div id="small-badge" class="badge badge-success size-badge">Small</div></h2>
+            <h2><div id="medium-badge" class="badge badge-secondary size-badge">Medium</div></h2>
+            <h2><div id="large-badge" class="badge badge-secondary size-badge">Large</div></h2>
+            <h2><div id="extra-large-badge" class="badge badge-secondary size-badge">Extra Large</div></h2>
           </div>
-          <div class="card section" id="toppings-card">
-            <div class="card-header">
-              <h3>Choose Your Toppings</h3>
-            </div>
-            <div class="card-body">
-              <div class="row">
-                <div class="col">
-                  <h3><div class="badge badge-secondary toppings-badge">Diced Tomatoes</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Green Onions</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Red Onions</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Artichoke Hearts</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Green Peppers</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Red Peppers</div></h3>
-                </div>
-                <div class="col">
-                  <h3><div class="badge badge-secondary toppings-badge">Pepperoncinis</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Spinach</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Garlic</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Black Olives</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Jalapenos</div></h3>
-                  <h3><div class="badge badge-secondary toppings-badge">Sprouts</div></h3>
-                </div>
+        </div>
+        <div class="card section" id="style-card">
+          <div class="card-header">
+            <h4 style="text-align:center">Choose Your Crust Style</h4>
+          </div>
+          <div class="card-body">
+            <h2><div id="hand-tossed-badge" class="badge badge-success style-badge">Hand-Tossed</div></h2>
+            <h2><div id="deep-dish-badge" class="badge badge-secondary style-badge">Deep Dish</div></h2>
+            <h2><div id="thin-badge" class="badge badge-secondary style-badge">Thin Crust</div></h2>
+            <h2><div id="gluten-free-badge" class="badge badge-secondary style-badge">Gluten-Free</div></h2>
+          </div>
+        </div>
+        <div class="card section" id="toppings-card">
+          <div class="card-header">
+            <h4 style="text-align:center">Choose Your Toppings</h4>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col">
+                <h4><div class="badge badge-secondary toppings-badge">Diced Tomatoes</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Green Onions</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Red Onions</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Artichoke Hearts</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Green Peppers</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Red Peppers</div></h4>
+              </div>
+              <div class="col">
+                <h4><div class="badge badge-secondary toppings-badge">Pepperoncinis</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Spinach</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Garlic</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Black Olives</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Jalapenos</div></h4>
+                <h4><div class="badge badge-secondary toppings-badge">Sprouts</div></h4>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-md">
-          <div class="card" id="pizza-card">
-            <div class="card-header">
+      </div>
+      <div class="col-md">
+        <div class="card" id="pizza-card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col">
+                <h4>Your Pizza</h4>
+              </div>
+              <div class="col" style="text-align:right">
+                <h4><div id="total-price">Price: $0.00</div></h4>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="pizza-info">
               <div class="row">
                 <div class="col">
-                  <h3>Your Pizza</h3>
+                  <strong>Size:</strong>
+                  <span id="size-display">
+                    Small
+                  </span>
                 </div>
                 <div class="col" style="text-align:right">
-                  <h3><div id="total-price">Price: $0.00</div></h3>
+                  <strong>Style:</strong>
+                  <span id="style-display">
+                    Hand-Tossed
+                  </span>
                 </div>
               </div>
-            </div>
-            <div class="card-body">
-              <div id="pizza-info">
-                <div class="row">
-                  <div class="col">
-                    <strong>Size:</strong>
-                    <span id="size-display">
-                      Small
-                    </span>
-                  </div>
-                  <div class="col" style="text-align:right">
-
-                    <strong>Style:</strong>
-                    <span id="style-display">
-                      Hand-Tossed
-                    </span>
-                  </div>
-                </div>
-                <p></p>
-                <strong>Toppings:</strong>
-                <span id="toppings-display">
-                  Cheese
-                </span><br />
-              </div>
+              <p></p>
+              <strong>Toppings:</strong>
+              <span id="toppings-display">
+                Cheese
+              </span><br />
             </div>
           </div>
         </div>
