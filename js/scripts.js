@@ -48,6 +48,18 @@ $(function(){
 
   });
   $('#next-button').click(function(){
+    if ($(this).text() === "Confirm Order") {
+      $('#pizza-card').css({
+        'transform': 'translateX(-50%)'
+      })
+      var moveAmount = $('#pizza-card').width()/2
+      $(this).css({
+        'transform': 'translateX('+moveAmount+'px)'
+      })
+      $('button#previous-button').css({
+        'opacity': '0'
+      })
+    }
     $('button#previous-button').text("< " + activeSection[0].toUpperCase()+activeSection.substr(1,activeSection.length))
     $('.section#'+activeSection+'-card').slideUp()
     activeSection = sections[sections.indexOf(activeSection)+1]
