@@ -1,6 +1,6 @@
 simulator = new Simulator();
 $(function(){
-  $('#blurb').text(simulator.blurbs[randomInt(0,simulator.blurbs.length)]);
+  $('#blurb').html(simulator.blurbs[randomInt(0,simulator.blurbs.length-1)]);
   $('#start-button').css({
     'transform': 'translateX(0%)',
     'opacity': '1'
@@ -43,7 +43,7 @@ function handleStartClick(clicked) {
   $('#start-button').css({
     'opacity': '0'
   });
-  $('button#previous-button').text("Cancel")
+  $('button#previous-button').text("Cancel");
 }
 jQuery.prototype.swapClass = function(oldClass,newClass) {
   $(this).addClass(newClass);
@@ -51,54 +51,40 @@ jQuery.prototype.swapClass = function(oldClass,newClass) {
 }
 function handleBadgeClick(clicked,type) {
   var pizza = simulator.activePizza
+  var labelText = $(clicked).text()
   if (type==="size") {
-    $('.size-badge').swapClass('badge-success','badge-secondary')
-    $(clicked).swapClass('badge-secondary','badge-success')
-    console.log("found cost " + pizza.costOfItem(pizza.size) + " for " + pizza.size)
-    pizza.subtractCost(pizza.costOfItem(pizza.size));
-    var oldSizeIndex = pizza.sizeIndex()
-    pizza.size = $(clicked).text();
-    for (var i=1; i<pizza.toppings.length;i++) {
-      var topping = pizza.toppings[i]
-      pizza.subtractCost(pizza.costOfItem(topping,oldSizeIndex))
-      pizza.addCost(pizza.costOfItem(topping))
-    }
-    $('#size-display').text(pizza.size + " ");
-    pizza.addCost(pizza.costOfItem(pizza.size));
+    pizza.changeItem(type,labelText)
     pizza.updatePriceDisplay();
+    $('.size-badge').swapClass('badge-success','badge-secondary'); // make them all gray
+    $(clicked).swapClass('badge-secondary','badge-success'); // change the clicked one
+    $('#size-display').text(pizza.size + " ");
   } else if (type==="style") {
+    pizza.changeItem(type,labelText)
+    pizza.updatePriceDisplay();
     $('.style-badge').swapClass('badge-success','badge-secondary')
     $(clicked).swapClass('badge-secondary','badge-success')
-    pizza.subtractCost(pizza.costOfItem(pizza.style));
-    pizza.style = $(clicked).text();
-    $('#style-display').text(pizza.style + " ");  
-    pizza.addCost(pizza.costOfItem(pizza.style));
-    pizza.updatePriceDisplay();
+    $('#style-display').text(pizza.style + " ");
+   
   } else if (type==="cheese") {
-    var sizeIndex = pizza.sizeIndex()
-    var cheeseName = "Cheese"
-    $(clicked).text()==="None" ? cheeseName = "No Cheese" :
-    $(clicked).text()==="Extra" ? cheeseName = "Extra Cheese" : false
-    $('.cheese-badge').swapClass('badge-success','badge-secondary')
-    $(clicked).swapClass('badge-secondary','badge-success')
-    pizza.subtractCost(pizza.costOfItem(pizza.toppings[0]));
-    pizza.toppings[0] = cheeseName
-    pizza.addCost(pizza.costOfItem(cheeseName));
+    // get long name of cheese states
+    var cheeseName = "Normal Cheese"
+    labelText==="None" ? cheeseName = "No Cheese" :
+    labelText==="Extra" ? cheeseName = "Extra Cheese" : false;
+    pizza.changeItem(type,cheeseName)
     pizza.updatePriceDisplay();
-    $('#toppings-display').text(pizza.toppingsList())
+    $('.cheese-badge').swapClass('badge-success','badge-secondary');
+    $(clicked).swapClass('badge-secondary','badge-success');
+    $('#cheese-display').text(pizza.cheese)
   } else if (type==="toppings") {
-    var sizeIndex = pizza.sizeIndex()
-    if ($(clicked).hasClass('badge-success')) {
-      $(clicked).swapClass('badge-success','badge-secondary')
-      pizza.toppings.splice(pizza.toppings.indexOf($(clicked).text()),1)
-      pizza.subtractCost(pizza.costOfItem($(clicked).text()))
+    var remove = $(clicked).hasClass('badge-success'); // already selected?
+    if (remove) {
+      $(clicked).swapClass('badge-success','badge-secondary');
     } else {
       $(clicked).swapClass('badge-secondary','badge-success')
-      pizza.toppings.push($(clicked).text())
-      pizza.addCost(pizza.costOfItem($(clicked).text()))
     }
-    pizza.updatePriceDisplay()
-    $('#toppings-display').text(pizza.toppingsList())
+    pizza.changeItem(type,labelText,remove)
+    pizza.updatePriceDisplay();
+    $('#toppings-display').text(pizza.toppings.join(", "));
   }
 }
 function handlePrevClick(clicked) {
@@ -171,55 +157,58 @@ function off(element) {
 }
 function Simulator() {
   this.blurbs = [
-    "The greatest pizza you could ever imagine."
+    'The greatest pizza you can imagine.',
+    'You\'ll never have a pizza this good.',
+    'Cholesterol-free <span style="color:lightgray">|</span> Zero calories <span style="color:lightgray">|</span> Level 5 Vegan'
   ];
   this.prices = {
     sizes: {
       'Small': 600,
-      'Medium': 750,
-      'Large': 900,
-      'Extra Large': 1200,
+      'Medium': 725,
+      'Large': 875,
+      'Extra Large': 1050,
     },
     styles: {
       'Hand-Tossed': 0,
-      'Deep Dish': 300,
-      'Wafer-Thin': 200,
-      'Gluten-Free': 350,
+      'Deep Dish': 200,
+      'Wafer-Thin': 150,
+      'Gluten-Free': 175,
     },
-    cheeses: {
+    cheese: {
+      // prices for ["Small","Medium","Large","Extra Large"]
       'No Cheese':[0,0,0,0],
-      'Cheese':[0,0,0,0],
-      'Extra Cheese':[150,250,350,450]
+      'Normal Cheese':[0,0,0,0],
+      'Extra Cheese':[100,150,200,250]
     },
     toppings: {
-      'Diced Tomatoes': [100,200,250,300],
-      'Green Onions': [100,200,250,300],
-      'Red Onions': [100,200,250,300],
-      'Artichoke Hearts': [200,300,350,400],
-      'Green Peppers': [100,200,250,300],
-      'Red Peppers': [100,200,250,300],
-      'Pepperoncinis': [100,200,250,300],
-      'Spinach': [150,250,300,350],
+      // prices for ["Small","Medium","Large","Extra Large"]
+      'Diced Tomatoes': [75,100,125,150],
+      'Red Onions': [75,100,125,150],
+      'Mushrooms': [75,100,125,150],
+      'Green Peppers': [75,100,125,150],
+      'Black Olives': [75,100,125,150],
+      'Pepperoncinis': [75,100,125,150],
+      'Jalapenos': [100,125,175,225],
+      'Red Peppers': [100,150,200,225],
+      'Spinach': [100,150,200,225],
+      'Cauliflour': [150,200,250,350],
       'Garlic': [200,300,450,400],
-      'Black Olives': [100,200,250,300],
-      'Jalapenos': [100,200,250,300],
-      'Sprouts': [50,100,150,200],
+      'Sprouts': [50,75,100,125],
     }
   };
   this.pizzas = [];
   this.sections = ["size","style","toppings"]
-  this.activePizza = undefined;
-  this.activeSection = undefined;
+  this.activePizza;
+  this.activeSection;
   this.startPizza = function() {
-    var newPizza = new Pizza();
+    var newPizza = new Pizza(this);
     this.pizzas.push(newPizza);
-    newPizza.creator = this;
     this.activePizza = newPizza;
     this.activeSection = this.sections[0]
-    newPizza.addCost(newPizza.costOfItem("Small"));
-    newPizza.addCost(newPizza.costOfItem("Hand-Tossed"));
+    newPizza.addCost(newPizza.costOfItem(newPizza.size));
+    newPizza.addCost(newPizza.costOfItem(newPizza.style));
+    newPizza.addCost(newPizza.costOfItem(newPizza.cheese)); 
     newPizza.updatePriceDisplay();
-    console.log(newPizza.costOfItem("Garlic"))
   }
   this.displayOverlay = function() {
     $('#overlay').fadeIn();
@@ -228,28 +217,18 @@ function Simulator() {
     pizza.invoice = new Invoice(pizza);
   }
 }
-function Pizza() {
-  this.creator;
+function Pizza(creator) {
+  this.creator = creator; // creator dictates prices
   this.infoArea = $('#pizza-info');
   this.size = "Small";
   this.style = "Hand-Tossed";
-  this.toppings = ["Cheese"];
+  this.cheese = "Normal Cheese";
+  this.toppings = [];
   this.totalPrice = 0;
   this.invoice = undefined;
-  this.sizeIndex = function(){
-    return Object.keys(simulator.prices.sizes).indexOf(this.size)
-  }
 }
-Pizza.prototype.toppingsList = function() {
-  var list = "";
-  this.toppings.forEach(function(topping,i){
-    list += topping;
-    if (i < (simulator.activePizza.toppings.length-1)) {
-      list += ", ";
-    }
-  });
-  console.log("list " + list)
-  return list;
+Pizza.prototype.sizeIndex = function(){
+  return Object.keys(simulator.prices.sizes).indexOf(this.size)
 }
 Pizza.prototype.costOfItem = function(pricedItem,sizeIndex=this.sizeIndex()) {
   var price;
@@ -261,29 +240,54 @@ Pizza.prototype.costOfItem = function(pricedItem,sizeIndex=this.sizeIndex()) {
       }
     }
   }
-  console.log("size index is " + sizeIndex)
   if (typeof(price) === "object") {
-    console.log("returning " + price[sizeIndex] + " for topping " + pricedItem)
     return price[sizeIndex]
   } else {
-    console.log("returning " + price + " for " + pricedItem)
-    return price
+    return price;
+  }
+}
+Pizza.prototype.changeItem = function(category,item,remove) {
+  if (category === "toppings") {
+    if (!remove) {
+      this[category].push(item);
+      this.totalPrice += this.costOfItem(item);
+    } else {
+      this[category].splice(this[category].indexOf(item),1);
+      this.totalPrice -= this.costOfItem(item);
+    }
+  } else if (category === "cheese") {
+    this.totalPrice -= this.costOfItem(this.cheese);
+    this.totalPrice += this.costOfItem(item);
+    this.cheese = item;
+  } else {
+    this.totalPrice += this.costOfItem(item);
+    this.totalPrice -= this.costOfItem(this[category]);
+    if (category === "size") { // if changing size, reevaluate toppings/extra cheese costs
+      var oldSizeIndex = this.sizeIndex();
+      this[category] = item;
+      for (var i=0; i<this.toppings.length;i++) {
+        var topping = this.toppings[i];
+        this.totalPrice -= this.costOfItem(topping,oldSizeIndex);
+        this.totalPrice += this.costOfItem(topping);
+      }
+      this.totalPrice -= this.costOfItem(this.cheese,oldSizeIndex);
+      this.totalPrice += this.costOfItem(this.cheese);
+    } else {
+      this[category] = item;
+    }
   }
 }
 Pizza.prototype.addCost = function(cost) {
-  console.log("adding " + cost)
   this.totalPrice += cost;
 }
 Pizza.prototype.subtractCost = function(cost) {
-  console.log("subtracting " + cost)
-
-  this.totalPrice -= cost
+  this.totalPrice -= cost;
 }
 Pizza.prototype.updatePriceDisplay = function(){ 
-  console.log("total " + this.totalPrice)
-  $('#total-price').text("Price: "+toDollars(this.totalPrice))
+  $('#total-price').text("Price: "+toDollars(this.totalPrice));
 }
 function Invoice(pizza) {
+  this.pizza = pizza;
   this.html = `<div id="invoice" class="card">
                 <div style="text-align:center" class="card-header">
                   <button class="btn btn-success btn-lg" id="final-button">
@@ -307,15 +311,15 @@ function Invoice(pizza) {
                   </div>
                 </div>
               </div>`;
-  $('body').prepend(this.html)
-  this.div = $('#invoice')
+  $('body').prepend(this.html);
+  this.div = $('#invoice');
   this.div.css({
     'width': ($('#header').width()*0.75)+'px'
   })
   this.confirmButton = $('#final-button')
   this.div.css({
     'top': '-10%'
-  })
+  });
   this.div.animate({
     'top': '10%'
   },400)
@@ -325,26 +329,22 @@ function Invoice(pizza) {
     'opacity': '1'
   },400,function(){
     $(this).addClass('pulse')
-  })
+  });
   this.itemList = $('#item-list');
   this.priceList = $('#price-list');
   this.itemList.append(pizza.size + " Pizza<br />");
-  this.priceList.append(toDollars(simulator.prices.sizes[pizza.size])+ "<br />");
+  this.priceList.append(toDollars(pizza.creator.prices.sizes[pizza.size])+ "<br />");
   this.itemList.append(pizza.style + " Crust<br />");
-  this.priceList.append(toDollars(simulator.prices.styles[pizza.style])+ "<br />");
-  var sizeIndex = simulator.activePizza.sizeIndex()
+  this.priceList.append(toDollars(pizza.creator.prices.styles[pizza.style])+ "<br />");
+  this.itemList.append(pizza.cheese + "<br />");
+  this.priceList.append(toDollars(pizza.creator.prices.cheese[pizza.cheese][pizza.creator.activePizza.sizeIndex()])+ "<br />");
   for (var i=0; i<pizza.toppings.length; i++) {
     var topping = pizza.toppings[i];
     this.itemList.append(" - add " + topping + "<br />");
-    if (i===0) {
-      this.priceList.append(toDollars(simulator.prices.cheeses[topping][sizeIndex])+"<br />")
-    } else {
-      this.priceList.append(toDollars(simulator.prices.toppings[topping][sizeIndex])+"<br />");
-    }
+    this.priceList.append(toDollars(pizza.creator.prices.toppings[topping][pizza.creator.activePizza.sizeIndex()])+"<br />");
   }
 }
 toDollars = function(num) {
-  console.log("translating " + num)
   var dollars = Math.floor(num/100)
   var cents = num%100
   if (cents.toString().length===1) {
@@ -354,4 +354,4 @@ toDollars = function(num) {
 }
 function randomInt(min,max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
-};
+}
