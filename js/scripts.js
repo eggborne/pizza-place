@@ -1,8 +1,6 @@
-var sections = ["size","style","toppings"]
-var activeSection = "intro";
-
+simulator = new Simulator();
 $(function(){
-  simulator = new Simulator();
+  $('#blurb').text(simulator.blurbs[randomInt(0,simulator.blurbs.length)]);
   $('#start-button').css({
     'transform': 'translateX(0%)',
     'opacity': '1'
@@ -32,10 +30,9 @@ $(function(){
 });
 function handleStartClick(clicked) {
   simulator.startPizza();
-  activeSection = sections[0];
   onFromRight('button#previous-button');
   onFromRight('button#next-button');
-  $('.section#'+activeSection+'-card').slideDown(600)
+  $('.section#'+simulator.activeSection+'-card').slideDown(600)
   $('.section').css({
     'opacity': '1'
   });
@@ -53,73 +50,74 @@ jQuery.prototype.swapClass = function(oldClass,newClass) {
   $(this).removeClass(oldClass);
 }
 function handleBadgeClick(clicked,type) {
+  var pizza = simulator.activePizza
   if (type==="size") {
     $('.size-badge').swapClass('badge-success','badge-secondary')
     $(clicked).swapClass('badge-secondary','badge-success')
-    simulator.activePizza.subtractCost('sizes',simulator.activePizza.size);
-    var oldSizeIndex = Object.keys(simulator.prices.sizes).indexOf(simulator.activePizza.size)
-    var newSizeIndex = Object.keys(simulator.prices.sizes).indexOf($(clicked).text())
-    for (var i=1; i<simulator.activePizza.toppings.length;i++) {
-      var topping = simulator.activePizza.toppings[i]
-      simulator.activePizza.subtractCost('toppings',topping,oldSizeIndex)
-      simulator.activePizza.addCost('toppings',topping,newSizeIndex)
+    console.log("found cost " + pizza.costOfItem(pizza.size) + " for " + pizza.size)
+    pizza.subtractCost(pizza.costOfItem(pizza.size));
+    var oldSizeIndex = pizza.sizeIndex()
+    pizza.size = $(clicked).text();
+    for (var i=1; i<pizza.toppings.length;i++) {
+      var topping = pizza.toppings[i]
+      pizza.subtractCost(pizza.costOfItem(topping,oldSizeIndex))
+      pizza.addCost(pizza.costOfItem(topping))
     }
-    simulator.activePizza.size = $(clicked).text();
-    $('#size-display').text(simulator.activePizza.size + " ");
-    simulator.activePizza.addCost('sizes',$(clicked).text());
-    simulator.activePizza.updatePriceDisplay();
+    $('#size-display').text(pizza.size + " ");
+    pizza.addCost(pizza.costOfItem(pizza.size));
+    pizza.updatePriceDisplay();
   } else if (type==="style") {
     $('.style-badge').swapClass('badge-success','badge-secondary')
     $(clicked).swapClass('badge-secondary','badge-success')
-    simulator.activePizza.subtractCost('styles',simulator.activePizza.style);
-    simulator.activePizza.style = $(clicked).text();
-    $('#style-display').text(simulator.activePizza.style + " ");  
-    simulator.activePizza.addCost('styles',$(clicked).text());
-    simulator.activePizza.updatePriceDisplay();
+    pizza.subtractCost(pizza.costOfItem(pizza.style));
+    pizza.style = $(clicked).text();
+    $('#style-display').text(pizza.style + " ");  
+    pizza.addCost(pizza.costOfItem(pizza.style));
+    pizza.updatePriceDisplay();
   } else if (type==="cheese") {
-    var sizeIndex = simulator.activePizza.sizeIndex()
+    var sizeIndex = pizza.sizeIndex()
     var cheeseName = "Cheese"
     $(clicked).text()==="None" ? cheeseName = "No Cheese" :
     $(clicked).text()==="Extra" ? cheeseName = "Extra Cheese" : false
     $('.cheese-badge').swapClass('badge-success','badge-secondary')
     $(clicked).swapClass('badge-secondary','badge-success')
-    simulator.activePizza.subtractCost('cheeses',simulator.activePizza.toppings[0],sizeIndex);
-    simulator.activePizza.toppings[0] = cheeseName
-    simulator.activePizza.addCost('cheeses',cheeseName,sizeIndex);
-    simulator.activePizza.updatePriceDisplay();
-    $('#toppings-display').text(simulator.activePizza.toppingsList())
+    pizza.subtractCost(pizza.costOfItem(pizza.toppings[0]));
+    pizza.toppings[0] = cheeseName
+    pizza.addCost(pizza.costOfItem(cheeseName));
+    pizza.updatePriceDisplay();
+    $('#toppings-display').text(pizza.toppingsList())
   } else if (type==="toppings") {
-    var sizeIndex = simulator.activePizza.sizeIndex()
+    var sizeIndex = pizza.sizeIndex()
     if ($(clicked).hasClass('badge-success')) {
       $(clicked).swapClass('badge-success','badge-secondary')
-      simulator.activePizza.toppings.splice(simulator.activePizza.toppings.indexOf($(clicked).text()),1)
-      simulator.activePizza.subtractCost('toppings',$(clicked).text(),sizeIndex)
+      pizza.toppings.splice(pizza.toppings.indexOf($(clicked).text()),1)
+      pizza.subtractCost(pizza.costOfItem($(clicked).text()))
     } else {
       $(clicked).swapClass('badge-secondary','badge-success')
-      simulator.activePizza.toppings.push($(clicked).text())
-      simulator.activePizza.addCost('toppings',$(clicked).text(),sizeIndex)
+      pizza.toppings.push($(clicked).text())
+      pizza.addCost(pizza.costOfItem($(clicked).text()))
     }
-    simulator.activePizza.updatePriceDisplay()
-    $('#toppings-display').text(simulator.activePizza.toppingsList())
+    pizza.updatePriceDisplay()
+    $('#toppings-display').text(pizza.toppingsList())
   }
 }
 function handlePrevClick(clicked) {
   if ($(clicked).text()==="Cancel") {
     location.reload();
   }
-  if (sections.indexOf(activeSection) < sections.length) {
+  if (simulator.sections.indexOf(simulator.activeSection) < simulator.sections.length) {
     $('button#next-button').text("Next >")
   }
-  if (sections.indexOf(activeSection) < sections.length) {
-    var lastSection = sections[sections.indexOf(activeSection)-2]
+  if (simulator.sections.indexOf(simulator.activeSection) < simulator.sections.length) {
+    var lastSection = simulator.sections[simulator.sections.indexOf(simulator.activeSection)-2]
     if (!lastSection) {
       $('button#previous-button').text("Cancel")
     } else {
       $('button#previous-button').text("< " + lastSection[0].toUpperCase()+lastSection.substr(1,lastSection.length))
     }
-    $('.section#'+activeSection+'-card').slideUp()
-    activeSection = sections[sections.indexOf(activeSection)-1]
-    $('.section#'+activeSection+'-card').slideDown()
+    $('.section#'+simulator.activeSection+'-card').slideUp()
+    simulator.activeSection = simulator.sections[simulator.sections.indexOf(simulator.activeSection)-1]
+    $('.section#'+simulator.activeSection+'-card').slideDown()
   }
 }
 function handleNextClick(clicked) {
@@ -144,15 +142,15 @@ function handleNextClick(clicked) {
     $('button#start-button').css({
       'pointer-events': 'none'
     });
-    $('.section#'+activeSection+'-card').slideUp()
+    $('.section#'+simulator.activeSection+'-card').slideUp()
     simulator.produceInvoice(simulator.activePizza)
     simulator.displayOverlay()
   } else {
-    $('button#previous-button').text("< " + activeSection[0].toUpperCase()+activeSection.substr(1,activeSection.length))
-    $('.section#'+activeSection+'-card').slideUp()
-    activeSection = sections[sections.indexOf(activeSection)+1]
-    $('.section#'+activeSection+'-card').slideDown()
-    if (sections.indexOf(activeSection) === sections.length-1) {
+    $('button#previous-button').text("< " + simulator.activeSection[0].toUpperCase()+simulator.activeSection.substr(1,simulator.activeSection.length))
+    $('.section#'+simulator.activeSection+'-card').slideUp()
+    simulator.activeSection = simulator.sections[simulator.sections.indexOf(simulator.activeSection)+1]
+    $('.section#'+simulator.activeSection+'-card').slideDown()
+    if (simulator.sections.indexOf(simulator.activeSection) === simulator.sections.length-1) {
       $('button#next-button').text("Confirm Order")
     }
   }
@@ -174,27 +172,26 @@ function off(element) {
 function Simulator() {
   this.blurbs = [
     "The greatest pizza you could ever imagine."
-  ]
-  this.pizzas = [];
+  ];
   this.prices = {
-    'sizes': {
+    sizes: {
       'Small': 600,
       'Medium': 750,
       'Large': 900,
       'Extra Large': 1200,
     },
-    'styles': {
+    styles: {
       'Hand-Tossed': 0,
       'Deep Dish': 300,
       'Wafer-Thin': 200,
       'Gluten-Free': 350,
     },
-    'cheeses': {
+    cheeses: {
       'No Cheese':[0,0,0,0],
       'Cheese':[0,0,0,0],
       'Extra Cheese':[150,250,350,450]
     },
-    'toppings': {
+    toppings: {
       'Diced Tomatoes': [100,200,250,300],
       'Green Onions': [100,200,250,300],
       'Red Onions': [100,200,250,300],
@@ -208,34 +205,40 @@ function Simulator() {
       'Jalapenos': [100,200,250,300],
       'Sprouts': [50,100,150,200],
     }
-  }
+  };
+  this.pizzas = [];
+  this.sections = ["size","style","toppings"]
+  this.activePizza = undefined;
+  this.activeSection = undefined;
   this.startPizza = function() {
-    var newPizza = new Pizza()
-    this.pizzas.push(newPizza)
-    this.activePizza = newPizza
+    var newPizza = new Pizza();
+    this.pizzas.push(newPizza);
+    newPizza.creator = this;
+    this.activePizza = newPizza;
+    this.activeSection = this.sections[0]
+    newPizza.addCost(newPizza.costOfItem("Small"));
+    newPizza.addCost(newPizza.costOfItem("Hand-Tossed"));
+    newPizza.updatePriceDisplay();
+    console.log(newPizza.costOfItem("Garlic"))
   }
   this.displayOverlay = function() {
-    $('#overlay').fadeIn()
+    $('#overlay').fadeIn();
   }
   this.produceInvoice = function(pizza) {
-    pizza.invoice = new Invoice(pizza)
+    pizza.invoice = new Invoice(pizza);
   }
-  console.log(this.blurbs[randomInt(0,this.blurbs.length)])
-  $('#blurb').text(this.blurbs[randomInt(0,this.blurbs.length)])
 }
 function Pizza() {
-  this.infoArea = $('#pizza-info')
+  this.creator;
+  this.infoArea = $('#pizza-info');
   this.size = "Small";
   this.style = "Hand-Tossed";
   this.toppings = ["Cheese"];
   this.totalPrice = 0;
-  this.addCost('sizes','Small');
-  this.addCost('styles','Hand-Tossed');
   this.invoice = undefined;
   this.sizeIndex = function(){
     return Object.keys(simulator.prices.sizes).indexOf(this.size)
   }
-  this.updatePriceDisplay();
 }
 Pizza.prototype.toppingsList = function() {
   var list = "";
@@ -248,22 +251,36 @@ Pizza.prototype.toppingsList = function() {
   console.log("list " + list)
   return list;
 }
-Pizza.prototype.addCost = function(category,item,index) {
-  if (index) {
-    this.totalPrice += parseInt(simulator.prices[category][item][index])
+Pizza.prototype.costOfItem = function(pricedItem,sizeIndex=this.sizeIndex()) {
+  var price;
+  for (category in this.creator.prices) {
+    for (item in this.creator.prices[category]) {
+      if (item === pricedItem) {
+        price = this.creator.prices[category][item]
+        continue;
+      }
+    }
+  }
+  console.log("size index is " + sizeIndex)
+  if (typeof(price) === "object") {
+    console.log("returning " + price[sizeIndex] + " for topping " + pricedItem)
+    return price[sizeIndex]
   } else {
-    this.totalPrice += parseInt(simulator.prices[category][item]);
+    console.log("returning " + price + " for " + pricedItem)
+    return price
   }
 }
-Pizza.prototype.subtractCost = function(category,item,index) {
-  if (index) {
-    this.totalPrice -= parseInt(simulator.prices[category][item][index])
-  } else {
-    
-    this.totalPrice -= parseInt(simulator.prices[category][item]);
-  }
+Pizza.prototype.addCost = function(cost) {
+  console.log("adding " + cost)
+  this.totalPrice += cost;
+}
+Pizza.prototype.subtractCost = function(cost) {
+  console.log("subtracting " + cost)
+
+  this.totalPrice -= cost
 }
 Pizza.prototype.updatePriceDisplay = function(){ 
+  console.log("total " + this.totalPrice)
   $('#total-price').text("Price: "+toDollars(this.totalPrice))
 }
 function Invoice(pizza) {
