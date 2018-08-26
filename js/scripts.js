@@ -145,7 +145,7 @@ function handleNextClick(clicked) {
       'pointer-events': 'none'
     });
     $('.section#'+activeSection+'-card').slideUp()
-    simulator.activePizza.produceInvoice()
+    simulator.produceInvoice(simulator.activePizza)
     simulator.displayOverlay()
   } else {
     $('button#previous-button').text("< " + activeSection[0].toUpperCase()+activeSection.substr(1,activeSection.length))
@@ -172,6 +172,9 @@ function off(element) {
   });
 }
 function Simulator() {
+  this.blurbs = [
+    "The greatest pizza you could ever imagine."
+  ]
   this.pizzas = [];
   this.prices = {
     'sizes': {
@@ -214,6 +217,11 @@ function Simulator() {
   this.displayOverlay = function() {
     $('#overlay').fadeIn()
   }
+  this.produceInvoice = function(pizza) {
+    pizza.invoice = new Invoice(pizza)
+  }
+  console.log(this.blurbs[randomInt(0,this.blurbs.length)])
+  $('#blurb').text(this.blurbs[randomInt(0,this.blurbs.length)])
 }
 function Pizza() {
   this.infoArea = $('#pizza-info')
@@ -226,9 +234,6 @@ function Pizza() {
   this.invoice = undefined;
   this.sizeIndex = function(){
     return Object.keys(simulator.prices.sizes).indexOf(this.size)
-  }
-  this.produceInvoice = function() {
-    this.invoice = new Invoice(this)
   }
   this.updatePriceDisplay();
 }
@@ -313,7 +318,7 @@ function Invoice(pizza) {
   var sizeIndex = simulator.activePizza.sizeIndex()
   for (var i=0; i<pizza.toppings.length; i++) {
     var topping = pizza.toppings[i];
-    this.itemList.append(" -add " + topping + "<br />");
+    this.itemList.append(" - add " + topping + "<br />");
     if (i===0) {
       this.priceList.append(toDollars(simulator.prices.cheeses[topping][sizeIndex])+"<br />")
     } else {
@@ -330,3 +335,6 @@ toDollars = function(num) {
   }
   return "$" + dollars + "." + cents
 }
+function randomInt(min,max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
