@@ -1,8 +1,8 @@
 body {
   background-color: tan;
-  margin-left:auto;
-  margin-right:auto;
-  max-width:900px
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 900px
 }
 button {
   min-width:160px;
@@ -26,13 +26,13 @@ button {
 }
 #start-button {
   position:absolute;
-  transform: translateX(-25%)
+  transform: translateX(-25%);
 }
 #header {
   background-color: white;
   margin-bottom: 0px;
   padding: 10px 40px 30px 40px;
-  box-shadow: 0px 0px 2px 0px black
+  box-shadow: 0px 0px 2px 0px black;
 }
 #pizza-card {
   width:100%;
@@ -51,6 +51,7 @@ button {
   position: fixed;
   left: 0;
   display:none;
+  z-index:24
 }
 #invoice {
   position:fixed;
@@ -86,8 +87,18 @@ button {
   padding-bottom: 8%;
   font-size:0.65em
 }
+.cheese-badge {
+  padding-top: 8%;
+  padding-bottom: 8%;
+  width:90%;
+  font-size:0.65em
+}
 .lead {
-  color:#777
+  text-align:right;
+  color:#777;
+  font-style: italic;
+  font-size:1.05rem;
+  padding-top:1%;
 }
 .section {
   width: 100%;
