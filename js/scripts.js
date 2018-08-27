@@ -7,21 +7,21 @@ $(function(){
   });
   onFromRight('button#start-button');
   $('#start-button').click(function(){
-    handleStartClick(this)
+    handleStartClick(this);
   });
   $('#next-button').click(function(){
-    handleNextClick(this)
+    handleNextClick(this);
   });
   $('#previous-button').click(function(){
-    handlePrevClick(this)
+    handlePrevClick(this);
   });
   $('.size-badge, .style-badge, .toppings-badge, .cheese-badge').click(function(){
-    handleItemClick(this)
+    handleItemClick(this);
   })
 });
 function handleStartClick() {
   simulator.startPizza();
-  simulator.revealElements()
+  simulator.revealElements();
 }
 function handleItemClick(clicked,remove) {
   var badge = $(clicked)
@@ -41,7 +41,7 @@ function handleItemClick(clicked,remove) {
   simulator.updateDisplay(simulator.activePizza);
 }
 function handlePrevClick(clicked) {
-  if ($(clicked).text()==="Cancel") {
+  if ($(clicked).text() === "Cancel") {
     location.reload();
   }
   if (simulator.sections.indexOf(simulator.activeSection) < simulator.sections.length) {
@@ -147,25 +147,47 @@ Simulator.prototype.produceInvoice = function(pizza) {
   pizza.invoice = new Invoice(pizza);
 }
 Simulator.prototype.showInvoice = function(invoice) {
-  invoice.div.css({
-    'width': ($('#header').width()*0.75)+'px',
-    'top': '-10%'
+  invoice.confirmScreen.css({
+    'top': '-10%',
+    'pointer-events': 'all'
   }).animate({
-    'top': '10%'
+    'top': '10%',
+    'opacity': '1',
   },400);
-  invoice.confirmButton.css({
-    'left': '0px',
-  }).animate({
+  invoice.confirmButton.animate({
     'opacity': '1'
   },400,function(){
     $(this).addClass('pulse')
   });
+  invoice.editButton.animate({
+    'opacity': '1'
+  },400);
   $('#overlay').fadeIn();
+}
+Simulator.prototype.hideInvoice = function(invoice) {
+  invoice.confirmScreen.css({
+    'pointer-events': 'none'
+  });
+  invoice.confirmScreen.animate({
+    'top': '-10%',
+    'opacity': '0'
+  },400);
+  invoice.confirmButton.animate({
+    'opacity': '0'
+  },400);
+  invoice.confirmScreen.removeClass('pulse')
+  invoice.editButton.animate({
+    'opacity': '0'
+  },400);
+  $('#overlay').fadeOut();
+}
+Simulator.prototype.showCompletedScreen = function() {
+  console.log("oder complete!");
 }
 Simulator.prototype.revealElements = function() {
   onFromRight('button#previous-button');
   onFromRight('button#next-button');
-  $('.section#'+simulator.activeSection+'-card').slideDown(600)
+  $('.section#'+simulator.activeSection+'-card').slideDown(600);
   $('.section').css({
     'opacity': '1'
   });
@@ -179,7 +201,7 @@ Simulator.prototype.revealElements = function() {
   $('button#previous-button').text("Cancel");
 }
 Simulator.prototype.hideElements = function() {
-  var moveAmount = $('#pizza-card').width()+(window.innerWidth/8)
+  var moveAmount = $('#pizza-card').width()+(window.innerWidth/8);
   $('#pizza-card').css({
     'transform': 'translateX(+'+(moveAmount)+'px)',
     'opacity': 0
@@ -191,16 +213,17 @@ Simulator.prototype.hideElements = function() {
   $('button#start-button').css({
     'pointer-events': 'none'
   });
-  $('.section#'+simulator.activeSection+'-card').slideUp(600)
+  $('.section#'+simulator.activeSection+'-card').slideUp(600);
 }
 Simulator.prototype.getCategory = function(itemName) {
   for (category in this.prices) {
     if (Object.keys(this.prices[category]).includes(itemName)) {
-      return category
+      return category;
     }
   }
 }
 function Pizza(creator) {
+  this.orderNumber = randomInt(8253,12253);
   this.creator = creator;
   this.infoArea = $('#pizza-info');
   this.size = "Large";
@@ -214,7 +237,7 @@ function Pizza(creator) {
   this.totalPrice += this.costOfItem(this.cheese);
 }
 Pizza.prototype.sizeIndex = function(){
-  return Object.keys(simulator.prices.size).indexOf(this.size)
+  return Object.keys(simulator.prices.size).indexOf(this.size);
 }
 Pizza.prototype.costOfItem = function(pricedItem,sizeIndex=this.sizeIndex()) {
   var price;
@@ -234,11 +257,9 @@ Pizza.prototype.costOfItem = function(pricedItem,sizeIndex=this.sizeIndex()) {
 }
 Pizza.prototype.changeItem = function(itemName,remove) {
   var category = this.creator.getCategory(itemName)
-  console.log()
   if (category === "toppings") {
     if (remove) {
       this[category].splice(this[category].indexOf(itemName),1);
-      console.log("takiong off cost of " + itemName + " " + this.costOfItem(itemName))
       this.totalPrice -= this.costOfItem(itemName);
     } else {
       this[category].push(itemName);
@@ -268,14 +289,18 @@ Pizza.prototype.changeItem = function(itemName,remove) {
 }
 function Invoice(pizza) {
   this.pizza = pizza;
-  var cheeseName = pizza.cheese
+  var cheeseName = pizza.cheese;
   if (cheeseName === "None") {
-    cheeseName = "No"
+    cheeseName = "No";
   } 
-  this.html = `<div id="invoice" class="card">
+  this.confirmHTML = `<div id="confirm-screen" class="card">
                 <div style="text-align:center" class="card-header">
-                  <button class="btn btn-success btn-lg" id="final-button">
+                  <button class="btn btn-success btn-lg confirm-screen-button" id="final-button">
                     PLACE ORDER
+                  </button>
+                  <br />
+                  <button class="btn btn-warning btn-lg confirm-screen-button" id="edit-button">
+                    EDIT
                   </button>
                 </div>
                 <div class="card-body">
@@ -301,13 +326,78 @@ function Invoice(pizza) {
                   </div>
                 </div>
               </div>`;            
-  $('body').prepend(this.html);
-  this.div = $('#invoice');
-  this.confirmButton = $('#final-button')
+  $('body').prepend(this.confirmHTML);
+  this.confirmScreen = $('#confirm-screen');
+  var sizeX = ($('#header').width()*0.8);
+  if (sizeX < 300) {
+    sizeX = 300;
+  }
+  this.confirmScreen.css({
+    'width': sizeX+'px'
+  });
+  this.confirmButton = $('#final-button');
+  this.editButton = $('#edit-button');
   for (var i=0; i<pizza.toppings.length; i++) {
     var topping = pizza.toppings[i];
     $('#item-list').append(" - add " + topping + "<br />");
     $('#price-list').append((pizza.creator.prices.toppings[topping][pizza.sizeIndex()]).toDollars() + "<br />");
+  }
+  var self = this;
+  this.confirmButton.click(function(){
+    simulator.hideInvoice(self);
+    simulator.hideElements();
+    $('button#previous-button').text("Cancel");
+    $('#header').css({
+      'transform': 'scale(0)'
+    });
+    self.showSuccessScreen();
+  });
+  this.editButton.click(function(){
+    simulator.hideInvoice(self);
+  });
+  this.successHTML = `<div id="success-screen" class="card">
+                        <div style="text-align:center" class="card-header">
+                            <h2>ORDER #`+pizza.orderNumber+` COMPLETE</h2>
+                        </div>
+                        <div class="card-body">
+                          <h2>Your pizza is on its way!*</h2>
+                          <div style="text-align:right"><small>* not really</small></div>
+                          <hr class="my-4">
+                          <p style="text-align:center">Your order (<strong>#`+pizza.orderNumber+`</strong>) was received at 5:55PM Monday, April 13th.</p>
+                          
+                          <h3 style="text-align:center">Estimated delivery time:</h3>
+                          <h3 style="text-align:center">6:14PM</h3>
+
+                          
+                        </div>
+                        <div style="text-align:center" class="card-footer">
+                          <button class="btn btn-warning btn-lg" id="again-button">
+                            Order Again
+                          </button>
+                        </div>
+                      </div>`;
+  $('body').prepend(this.successHTML);
+  this.successScreen = $('#success-screen');
+  this.successScreen.css({
+    'width': sizeX+'px'
+  });
+  this.againButton = $('#again-button');
+  this.againButton.click(function(){
+    location.reload();
+  });
+  this.showSuccessScreen = function() {
+    this.successScreen.css({
+      'transform': 'translateX(-50%) scale(1)',
+      'opacity': '1'
+    },400);
+    this.againButton.animate({
+      'opacity': '1'
+    },400);
+    var self = this;
+    setTimeout(function(){
+      self.confirmScreen.remove();
+      console.log("REM");
+    },400);
   }
 }
 Number.prototype.toDollars = function() {
