@@ -355,20 +355,33 @@ function Invoice(pizza) {
   this.editButton.click(function(){
     simulator.hideInvoice(self);
   });
+  var deliveryMinutes = randomInt(25,35)
+  var dateReceived = "5:55PM Monday, April 13th."
+  var now = new Date()
+  var timeNow = standardTime(now.getHours(),now.getMinutes())
+  var dateNow = prettyDate(now)
+  var deliveryDate = new Date()
+  deliveryDate.setMinutes(now.getMinutes()+deliveryMinutes)
+  var timeOfDelivery = standardTime(deliveryDate.getHours(),deliveryDate.getMinutes())
+
+
+  
   this.successHTML = `<div id="success-screen" class="card">
                         <div style="text-align:center" class="card-header">
                             <h2>ORDER #`+pizza.orderNumber+` COMPLETE</h2>
                         </div>
-                        <div class="card-body">
+                        <div style="text-align:center" class="card-body">
                           <h2>Your pizza is on its way!*</h2>
                           <div style="text-align:right"><small>* not really</small></div>
                           <hr class="my-4">
-                          <p style="text-align:center">Your order (<strong>#`+pizza.orderNumber+`</strong>) was received at 5:55PM Monday, April 13th.</p>
-                          
-                          <h3 style="text-align:center">Estimated delivery time:</h3>
-                          <h3 style="text-align:center">6:14PM</h3>
-
-                          
+                          <p>Your order (<strong>#`+pizza.orderNumber+`</strong>) was received at <strong>`+timeNow+`</strong><br />on `+dateNow+`.</p>
+                          <div class="card">
+                            <div class="card-body">
+                              <h3>Estimated delivery time:</h3>
+                              <hr class="my-4">
+                              <h2>`+timeOfDelivery+`</h2>
+                            </div>
+                          </div>                         
                         </div>
                         <div style="text-align:center" class="card-footer">
                           <button class="btn btn-warning btn-lg" id="again-button">
@@ -411,6 +424,34 @@ Number.prototype.toDollars = function() {
 jQuery.prototype.swapClass = function(oldClass,newClass) {
   $(this).addClass(newClass);
   $(this).removeClass(oldClass);
+}
+var fullDayNames = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+var fullMonthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function standardTime(hour,min) {
+  var newHour = hour
+  var newMin = min
+  var ampm = "AM"
+  if (hour === 0) {
+    newHour = "12"
+  } else if (hour===12) {
+    ampm = "PM"
+  } else if (hour > 12) {
+    newHour = hour-12
+    ampm = "PM"
+  }
+  if (min < 10) {
+    newMin = "0" + min
+  }
+  return newHour+":"+newMin+" "+ampm
+}
+function prettyDate(dateObj) {
+  var result = "";
+  var monthName = fullMonthNames[dateObj.getMonth()];
+  var dayName = fullDayNames[dateObj.getDay()];
+  var hour = dateObj.getHours()
+  var minute = dateObj.getMinutes()
+  result = dayName + ", " + monthName + " " + dateObj.getDate() + " " + dateObj.getFullYear();
+  return result
 }
 function randomInt(min,max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
